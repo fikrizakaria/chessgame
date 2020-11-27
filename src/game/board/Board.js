@@ -1,7 +1,6 @@
 import board from '../../assets/board.svg'
-import pt from '../../assets/point.svg'
 import React, { Component } from 'react'
-import {King,Queen,Bishop,Knight,Rook,Pawn} from './pieces'
+import {King,Pmove,Queen,Bishop,Knight,Rook,Pawn} from './pieces'
 const styles=[{
     height:"90vmin",
     width:"90vmin",
@@ -14,14 +13,57 @@ class Board extends Component {
         super(props);
         this.state={
             hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8,
-            matrix:[[1,1,1,1,1,1,1,1],
-                    [1,1,1,1,1,1,1,1],
+            matrix:[["Rb","Nb","Bb","Qb","Kb","Bb","Nb","Rb"],
+                    ['pb','pb','pb','pb','pb','pb','pb','pb'],
                     [0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0],
-                    [1,1,1,1,1,1,1,1],
-                    [1,1,1,1,1,1,1,1]],
+                    ['pw','pw','pw','pw','pw','pw','pw','pw'],
+                    ["Rw","Nw","Bw","Qw","Kw","Bw","Nw","Rw"]],
+            pieces:[]
+        }
+        this.generatePieces()
+    }
+    setMove=(i,j,c)=>{
+        const newmatrix = this.state.matrix.slice()
+        newmatrix[j][i]=c
+        this.setState({matrix: newmatrix})
+    }
+    generatePieces=()=>{
+        var L=this.state.pieces
+        for(var i=0;i<8;i++)for(var j=0;j<8;j++)if(this.state.matrix[i][j]!==0){
+            var pos=String.fromCharCode(j+97)+(8-i).toString()
+            if(this.state.matrix[i][j][0]==="p"){
+                L.push(
+                    <Pawn key={pos} smf={this.setMove} position={pos} select={this.handleSelect} cell={this.state.selected} color={this.state.matrix[i][j][1]} hs={this.state.hs}/>
+                )
+            }
+            else if(this.state.matrix[i][j][0]==="R"){
+                L.push(
+                    <Rook key={this.state.matrix[i][j][0]+pos} smf={this.setMove} position={pos} select={this.handleSelect} cell={this.state.selected} color={this.state.matrix[i][j][1]} hs={this.state.hs}/>
+                )
+            }
+            else if(this.state.matrix[i][j][0]==="N"){
+                L.push(
+                    <Knight key={this.state.matrix[i][j][0]+pos} smf={this.setMove} position={pos} select={this.handleSelect} cell={this.state.selected} color={this.state.matrix[i][j][1]} hs={this.state.hs}/>
+                )
+            }
+            else if(this.state.matrix[i][j][0]==="B"){
+                L.push(
+                    <Bishop key={this.state.matrix[i][j][0]+pos} smf={this.setMove} position={pos} select={this.handleSelect} cell={this.state.selected} color={this.state.matrix[i][j][1]} hs={this.state.hs}/>
+                )
+            }
+            else if(this.state.matrix[i][j][0]==="Q"){
+                L.push(
+                    <Queen key={this.state.matrix[i][j][0]+pos} smf={this.setMove} position={pos} select={this.handleSelect} cell={this.state.selected} color={this.state.matrix[i][j][1]} hs={this.state.hs}/>
+                )
+            }
+            else if(this.state.matrix[i][j][0]==="K"){
+                L.push(
+                    <King key={this.state.matrix[i][j][0]+pos} smf={this.setMove} position={pos} select={this.handleSelect} cell={this.state.selected} color={this.state.matrix[i][j][1]} hs={this.state.hs}/>
+                )
+            }
         }
     }
     updatehs=()=>{
@@ -33,61 +75,30 @@ class Board extends Component {
     componentWillUnmount() {
         window.removeEventListener('resize', this.updatehs)
     }
-    handleSelect=(abc,f,c)=>{
+    handleSelect=(abc,i,j,f,c,g)=>{
         if(this.state.selected===abc){
             this.setState({selected:""})
             this.setState({moves:[]})
         }
         else {
-            var i=abc.charCodeAt(1)-97
-            var j=8-parseInt(abc[2])
             var movesij=f(this.state.matrix,i,j,c)
-            this.setState({moves:movesij.map((elt,i)=>{
+            this.setState({moves:movesij.map((elt,ind)=>{
                 return(
-                    <div key={i} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+elt[0]*this.state.hs+"px,"+elt[1]*this.state.hs+"px)",backgroundSize: "90% 90%",backgroundRepeat: "no-repeat",backgroundImage:"url("+pt+")",cursor:"pointer",backgroundPosition:"center center"}}>
-                    </div>
+                    <Pmove smf={this.setMove} selectedp={abc[0]+c} p={g} key={ind} i={elt[0]} j={elt[1]} hs={this.state.hs}/>
                 )
             })})
             this.setState({selected:abc})
         }
     }
-    handleClick=()=>this.setState({selected:""})
+    handleClick=()=>{
+        this.setState({selected:""})
+        this.setState({moves:[]})
+    }
     render() {
         return (
             <div onClick={this.handleClick} style={styles[0]}>
-                <King position="e1" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Queen position="d1" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Bishop position="c1" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Bishop position="f1" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Knight position="b1" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Knight position="g1" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Rook position="h1" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Rook position="a1" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Pawn position="a2" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Pawn position="b2" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Pawn position="c2" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Pawn position="d2" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Pawn position="e2" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Pawn position="f2" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Pawn position="g2" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
-                <Pawn position="h2" select={this.handleSelect} cell={this.state.selected} color="w" hs={this.state.hs}/>
+                {this.state.pieces}
                 {this.state.moves}
-                <King position="e8" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Queen position="d8" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Bishop position="c8" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Bishop position="f8" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Knight position="b8" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Knight position="g8" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Rook position="h8" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Rook position="a8" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Pawn position="a7" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Pawn position="b7" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Pawn position="c7" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Pawn position="d7" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Pawn position="e7" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Pawn position="f7" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Pawn position="g7" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
-                <Pawn position="h7" select={this.handleSelect} cell={this.state.selected} color="b" hs={this.state.hs}/>
             </div>
         )
     }
