@@ -14,13 +14,28 @@ import pt from '../../assets/point.svg'
 import React, { Component } from 'react'
 
 class Pmove extends Component{
+    constructor(props){
+        super(props)
+        this.state={
+            hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8
+        }
+    }
     move=()=>{
         var move_to=this.props.p
         this.props.smf(this.props.i,this.props.j,this.props.selectedp)
         move_to([this.props.i,this.props.j])
     }
+    updatehs=()=>{
+        this.setState({hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8});
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.updatehs)
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updatehs)
+    }
     render(){
-        var hs=this.props.hs
+        var hs=this.state.hs
         return(
             <div onClick={this.move} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+this.props.i*hs+"px,"+this.props.j*hs+"px)",backgroundSize: "90% 90%",backgroundRepeat: "no-repeat",backgroundImage:"url("+pt+")",cursor:"pointer",backgroundPosition:"center center"}}></div>
         )
@@ -34,7 +49,8 @@ class King extends Component{
             image:props.color==='w'?kw:kb,
             pos:[props.position.charCodeAt(0)-97,8-parseInt(props.position[1])],
             color:props.color,
-            taken:false
+            taken:false,
+            hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8
         }
     }
     king_moves=(matrix,i,j,c)=>{
@@ -73,10 +89,19 @@ class King extends Component{
         this.setState({pos:[arr[0],arr[1]]})
         this.props.smf(this.state.pos[0],this.state.pos[1],0)
     }
+    updatehs=()=>{
+        this.setState({hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8});
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.updatehs)
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updatehs)
+    }
     render(){
-        var hs=this.props.hs
+        var hs=this.state.hs
         return(
-            <div key={this.state.type+this.props.position} onClick={this.cellSelected} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+this.state.pos[0]*hs+"px,"+this.state.pos[1]*hs+"px)",transition:"transform 0.5s",backgroundColor:this.props.cell===this.state.type+this.state.pos?"rgba(0,255,0,0.5)":"rgba(0,255,0,0)"}}>
+            <div key={this.state.type+this.props.position} onClick={this.cellSelected} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+this.state.pos[0]*hs+"px,"+this.state.pos[1]*hs+"px)",transition:"transform 0.5s",backgroundColor:this.props.cell===this.state.type+this.props.position?"rgba(0,255,0,0.5)":"rgba(0,255,0,0)"}}>
                 <div style={{backgroundSize: "90% 90%",backgroundRepeat: "no-repeat",backgroundImage:"url("+this.state.image+")",cursor:"pointer",backgroundPosition:"center center",width:"100%",height:"100%"}}></div>
             </div>
         )
@@ -90,7 +115,8 @@ class Queen extends Component{
             image:props.color==='w'?qw:qb,
             pos:[props.position.charCodeAt(0)-97,8-parseInt(props.position[1])],
             color:props.color,
-            taken:false
+            taken:false,
+            hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8
         }
     }
     queen_moves=(matrix,i,j,c)=>{
@@ -161,8 +187,17 @@ class Queen extends Component{
         this.setState({pos:[arr[0],arr[1]]})
         this.props.smf(this.state.pos[0],this.state.pos[1],0)
     }
+    updatehs=()=>{
+        this.setState({hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8});
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.updatehs)
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updatehs)
+    }
     render(){
-        var hs=this.props.hs
+        var hs=this.state.hs
         return(
             <div key={this.state.type+this.state.position} onClick={this.cellSelected} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+this.state.pos[0]*hs+"px,"+this.state.pos[1]*hs+"px)",transition:"transform 0.5s",backgroundColor:this.props.cell===this.state.type+this.state.pos?"rgba(0,255,0,0.5)":"rgba(0,255,0,0)"}}>
                 <div style={{backgroundSize: "90% 90%",backgroundRepeat: "no-repeat",backgroundImage:"url("+this.state.image+")",cursor:"pointer",backgroundPosition:"center center",width:"100%",height:"100%"}}></div>
@@ -178,7 +213,8 @@ class Bishop extends Component{
             image:props.color==='w'?bw:bb,
             pos:[props.position.charCodeAt(0)-97,8-parseInt(props.position[1])],
             color:props.color,
-            taken:false
+            taken:false,
+            hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8
         }
     }
     bishop_moves=(matrix,i,j,c)=>{
@@ -221,8 +257,17 @@ class Bishop extends Component{
         this.setState({pos:[arr[0],arr[1]]})
         this.props.smf(this.state.pos[0],this.state.pos[1],0)
     }
+    updatehs=()=>{
+        this.setState({hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8});
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.updatehs)
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updatehs)
+    }
     render(){
-        var hs=this.props.hs
+        var hs=this.state.hs
         return(
             <div key={this.state.type+this.state.position} onClick={this.cellSelected} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+this.state.pos[0]*hs+"px,"+this.state.pos[1]*hs+"px)",transition:"transform 0.5s",backgroundColor:this.props.cell===this.state.type+this.state.pos?"rgba(0,255,0,0.5)":"rgba(0,255,0,0)"}}>
                 <div style={{backgroundSize: "90% 90%",backgroundRepeat: "no-repeat",backgroundImage:"url("+this.state.image+")",cursor:"pointer",backgroundPosition:"center center",width:"100%",height:"100%"}}></div>
@@ -238,7 +283,8 @@ class Knight extends Component{
             image:props.color==='w'?nw:nb,
             pos:[props.position.charCodeAt(0)-97,8-parseInt(props.position[1])],
             color:props.color,
-            taken:false
+            taken:false,
+            hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8
         }
     }
     knight_moves=(matrix,i,j,c)=>{
@@ -277,8 +323,17 @@ class Knight extends Component{
         this.setState({pos:[arr[0],arr[1]]})
         this.props.smf(this.state.pos[0],this.state.pos[1],0)
     }
+    updatehs=()=>{
+        this.setState({hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8});
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.updatehs)
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updatehs)
+    }
     render(){
-        var hs=this.props.hs
+        var hs=this.state.hs
         return(
             <div key={this.state.type+this.state.position} onClick={this.cellSelected} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+this.state.pos[0]*hs+"px,"+this.state.pos[1]*hs+"px)",transition:"transform 0.5s",backgroundColor:this.props.cell===this.state.type+this.state.pos?"rgba(0,255,0,0.5)":"rgba(0,255,0,0)"}}>
                 <div style={{backgroundSize: "90% 90%",backgroundRepeat: "no-repeat",backgroundImage:"url("+this.state.image+")",cursor:"pointer",backgroundPosition:"center center",width:"100%",height:"100%"}}></div>
@@ -294,7 +349,8 @@ class Rook extends Component{
             image:props.color==='w'?rw:rb,
             pos:[props.position.charCodeAt(0)-97,8-parseInt(props.position[1])],
             color:props.color,
-            taken:false
+            taken:false,
+            hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8
         }
     }
     rook_moves=(matrix,i,j,c)=>{
@@ -337,8 +393,17 @@ class Rook extends Component{
         this.setState({pos:[arr[0],arr[1]]})
         this.props.smf(this.state.pos[0],this.state.pos[1],0)
     }
+    updatehs=()=>{
+        this.setState({hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8});
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.updatehs)
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updatehs)
+    }
     render(){
-        var hs=this.props.hs
+        var hs=this.state.hs
         return(
             <div key={this.state.type+this.state.position} onClick={this.cellSelected} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+this.state.pos[0]*hs+"px,"+this.state.pos[1]*hs+"px)",transition:"transform 0.5s",backgroundColor:this.props.cell===this.state.type+this.state.pos?"rgba(0,255,0,0.5)":"rgba(0,255,0,0)"}}>
                 <div style={{backgroundSize: "90% 90%",backgroundRepeat: "no-repeat",backgroundImage:"url("+this.state.image+")",cursor:"pointer",backgroundPosition:"center center",width:"100%",height:"100%"}}></div>
@@ -355,7 +420,8 @@ class Pawn extends Component{
             pos:[props.position.charCodeAt(0)-97,8-parseInt(props.position[1])],
             color:props.color,
             taken:false,
-            first_move:true
+            first_move:true,
+            hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8
         }
     }
     pawn_moves=(matrix,i,j,c)=>{
@@ -370,17 +436,29 @@ class Pawn extends Component{
     }
     cellSelected=(e)=>{
         e.stopPropagation()
-        this.props.select(this.state.type+this.props.position,this.state.pos[0],this.state.pos[1],this.pawn_moves,this.state.color,this.move_to)
+        this.props.select(this.state.type+this.props.position,this.state.pos[0],this.state.pos[1],this.pawn_moves,this.state.color,this.move_to,this.modifybg)
     }
     move_to=(arr)=>{
         this.setState({pos:[arr[0],arr[1]]})
         this.setState({first_move:false})
         this.props.smf(this.state.pos[0],this.state.pos[1],0)
     }
+    updatehs=()=>{
+        this.setState({hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8});
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.updatehs)
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updatehs)
+    }
+    modifybg=()=>{
+        this.setState({cell:this.props.cell()})
+    }
     render(){
-        var hs=this.props.hs
+        var hs=this.state.hs
         return(
-            <div onClick={this.cellSelected} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+this.state.pos[0]*hs+"px,"+this.state.pos[1]*hs+"px)",transition:"transform 0.5s",backgroundColor:this.props.cell===this.state.type+this.state.pos?"rgba(0,255,0,0.5)":"rgba(0,255,0,0)"}}>
+            <div onClick={this.cellSelected} style={{width:"12.5%",height:"12.5%",position:"absolute",transform:"translate("+this.state.pos[0]*hs+"px,"+this.state.pos[1]*hs+"px)",transition:"transform 0.5s",backgroundColor:this.state.cell===this.state.type+this.props.position?"rgba(0,255,0,0.5)":"rgba(0,255,0,0)"}}>
                 <div style={{backgroundSize: "90% 90%",backgroundRepeat: "no-repeat",backgroundImage:"url("+this.state.image+")",cursor:"pointer",backgroundPosition:"center center",width:"100%",height:"100%"}}></div>
             </div>
         )

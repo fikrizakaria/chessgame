@@ -13,6 +13,7 @@ class Board extends Component {
         super(props);
         this.state={
             hs:Math.min(window.innerWidth,window.innerHeight)*0.9/8,
+            selected:"89",
             matrix:[["Rb","Nb","Bb","Qb","Kb","Bb","Nb","Rb"],
                     ['pb','pb','pb','pb','pb','pb','pb','pb'],
                     [0,0,0,0,0,0,0,0],
@@ -30,13 +31,14 @@ class Board extends Component {
         newmatrix[j][i]=c
         this.setState({matrix: newmatrix})
     }
+    rsselected=()=>this.state.selected
     generatePieces=()=>{
         var L=this.state.pieces
         for(var i=0;i<8;i++)for(var j=0;j<8;j++)if(this.state.matrix[i][j]!==0){
             var pos=String.fromCharCode(j+97)+(8-i).toString()
             if(this.state.matrix[i][j][0]==="p"){
                 L.push(
-                    <Pawn key={pos} smf={this.setMove} position={pos} select={this.handleSelect} cell={this.state.selected} color={this.state.matrix[i][j][1]} hs={this.state.hs}/>
+                    <Pawn key={pos} smf={this.setMove} position={pos} select={this.handleSelect} cell={this.rsselected} color={this.state.matrix[i][j][1]} hs={this.state.hs}/>
                 )
             }
             else if(this.state.matrix[i][j][0]==="R"){
@@ -75,19 +77,21 @@ class Board extends Component {
     componentWillUnmount() {
         window.removeEventListener('resize', this.updatehs)
     }
-    handleSelect=(abc,i,j,f,c,g)=>{
+    handleSelect=(abc,i,j,f,c,g,m)=>{
         if(this.state.selected===abc){
             this.setState({selected:""})
             this.setState({moves:[]})
+            m()
         }
         else {
             var movesij=f(this.state.matrix,i,j,c)
+            this.setState({selected:abc})
+            m()
             this.setState({moves:movesij.map((elt,ind)=>{
                 return(
                     <Pmove smf={this.setMove} selectedp={abc[0]+c} p={g} key={ind} i={elt[0]} j={elt[1]} hs={this.state.hs}/>
                 )
             })})
-            this.setState({selected:abc})
         }
     }
     handleClick=()=>{
